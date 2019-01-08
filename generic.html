@@ -4,12 +4,15 @@
 	templated.co @templatedco
 	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
 -->
+
 <html>
 	<head>
 		<title>Hielo by TEMPLATED</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+		
 	</head>
 	<body class="subpage">
 
@@ -47,11 +50,31 @@
 								<p>maecenas sapien feugiat ex purus</p>
 								<h2>Lorem ipsum dolor</h2>
 							</header>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras at dignissim augue, in iaculis neque. Etiam bibendum felis ac vulputate pellentesque. Cras non blandit quam. Nunc porta, est non posuere sagittis, neque nunc pellentesque diam, a iaculis lacus urna vitae purus. In non dui vel est tempor faucibus. Aliquam erat volutpat. Quisque vel est vitae nibh laoreet auctor. In nec libero dui. Nulla ullamcorper, dolor nec accumsan viverra, libero eros rutrum metus, vel lacinia magna odio non nunc. Praesent semper felis eu rhoncus aliquam. Donec at quam ac libero vestibulum pretium. Nunc faucibus vel arcu in malesuada. Aenean at velit odio. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas commodo erat eget molestie sollicitudin. Donec imperdiet, ex sed blandit dictum, ipsum metus ultrices arcu, vitae euismod nisl sapien vitae tortor.</p>
+						<h3>Table</h3>
+								<h4>Default</h4>
+								<a id="addDay" class="button special">Add Day</a>
+								<div class="table-wrapper">
+									<table id="table_id" class="display" style="width:100%">
+										<thead>
+											<tr>
+												<th>Name</th>
+												<th>Description</th>
+												<th>Price</th>
+											</tr>
+										</thead>
+										<tbody>											
+										</tbody>
+										<tfoot>
+											<tr>
+												<td colspan="2"></td>
+												<td>100.00</td>
+											</tr>
+										</tfoot>
+									</table>
 
-							<p>Vivamus nec odio ac ligula congue feugiat at vitae leo. Aenean sem justo, finibus sed dui eu, accumsan facilisis dolor. Fusce quis dui eget odio iaculis aliquam vel sed velit. Nulla pellentesque posuere semper. Nulla eu sagittis lorem, a auctor nulla. Sed ac condimentum orci, ac varius ante. Nunc blandit quam sit amet sollicitudin sodales.</p>
-
-							<p>Vivamus ultricies mollis mauris quis molestie. Quisque eu mi velit. In et cursus nibh. Donec facilisis, orci sed mollis hendrerit, nunc risus mattis odio, eget efficitur nisl orci a lectus. Aenean finibus neque convallis orci sollicitudin tincidunt. Vivamus lacinia facilisis diam, quis facilisis nisi luctus nec. Aliquam ac molestie enim, ut ultrices elit. Fusce laoreet vulputate risus in tincidunt. Sed commodo mollis maximus. Nullam varius laoreet nibh sit amet facilisis. Donec ac odio vehicula, consequat elit et, sodales justo. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nullam ac auctor mauris, in hendrerit libero. </p>
+									<a id="addSpot" class="button special">Add Spot</a>
+									<a id="deleteSpot" class="button special">Delete Spot</a>
+								</div>
 						</div>
 					</div>
 				</div>
@@ -78,6 +101,77 @@
 			<script src="assets/js/skel.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+			<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+			
+			
+<script>
+var counter = 2;
+			
+			$(document).ready( function () {
+				$('#table_id').DataTable({
+						"search":   false,
+						"lengthChange": false,
+						"ordering": false,
+					});
+				$('#table_id2').DataTable({
+						"search":   false,
+						"lengthChange": false,
+						"ordering": false,
+				});
+				
+				var t = $('#table_id').DataTable();
+				
+ 
+			$('#addSpot').on( 'click', function () {
+				t.row.add( [
+					'<input  name="name" id="name" value="" placeholder="Name" />',
+					'<input  name="email" id="email" value="" placeholder="Email" />',
+					'<input  name="email" id="email" value="" placeholder="Email" />'
+				 ]).draw( false );
+		 
+				
+			} );
+			
+			$('#table_id tbody').on( 'click', 'tr', function () {
+				if ( $(this).hasClass('selected') ) {
+					$(this).removeClass('selected');
+				}
+				else {
+					t.$('tr.selected').removeClass('selected');
+					$(this).addClass('selected');
+				}
+			} );
+		 
+			$('#deleteSpot').click( function () {
+				t.row('.selected').remove().draw( false );
+			} );
+ 
+			$('#addDay').on('click', function(){
 
+				
+				var item = '<table id="table_id'+counter+'" class="display" style="width:100%"><thead><tr><th>Name</th><th>Description</th><th>Price</th></tr></thead><tfoot><tr><td colspan="2"></td><td>100.00</td></tr></tfoot></table>';
+				$('.table-wrapper').append(item);				
+				
+				item='<a id="addSpot" class="button special">Add Spot</a>'
+				$('.table-wrapper').append(item);	
+				
+				item='<a id="deleteSpot" class="button special">Delete Spot</a>'
+				$('.table-wrapper').append(item);	
+				
+				$('#table_id'+counter).DataTable({
+						"search":   false,
+						"lengthChange": false,
+						"ordering": false,
+				});
+				counter++;
+
+			});
+
+		
+			
+			
+			} );
+					
+</script>
 	</body>
 </html>
