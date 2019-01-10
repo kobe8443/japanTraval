@@ -1,6 +1,8 @@
 <!DOCTYPE HTML>
 <!--
-test123
+	Hielo by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
 -->
 
 <html>
@@ -33,28 +35,29 @@ test123
 			<section id="One" class="wrapper style3">
 				<div class="inner">
 					<header class="align-center">
-						<p>Eleifend vitae urna</p>
-						<h2>Generic Page Template</h2>
+						<p>交通旅費試算器</p>
+						<h2>行程排程</h2>
 					</header>
 				</div>
 			</section>
 
 		<!-- Two -->
-			<section id="two" class="wrapper style2">
-				<div class="inner">
+			<section id="two" class="wrapper style2" >
+				<div class="inner" >
 					<div class="box">
 						<div class="content">
 							<header class="align-center">
-								<p>maecenas sapien feugiat ex purus</p>
-								<h2>Lorem ipsum dolor</h2>
+								<p>交通旅費試算器</p>
+								<h2>行程排程</h2>
 							</header>
-						<h3>Table</h3>
-								<h4>Default</h4>
+						<h2 style="float:center;">行程排程</h2>
 								<a id="addDay" class="button special">Add Day</a>
+								<a id="deleteDay" class="button special"style="float:right;">Delete Day</a>
+								<p><h3 id="dayTag1">第1天</h3></p>								
 								<div class="table-wrapper">
-									<table id="table_id" class="display" style="width:100%">
+									<table id="table_id1" class="display" style="width:100%" function="table">
 										<thead>
-											<tr>
+											<tr value='1'>
 												<th>Name</th>
 												<th>Description</th>
 												<th>Price</th>
@@ -69,9 +72,8 @@ test123
 											</tr>
 										</tfoot>
 									</table>
-
-									<a id="addSpot" class="button special">Add Spot</a>
-									<a id="deleteSpot" class="button special">Delete Spot</a>
+									<a id="addSpot1" class="button special" value='1' function="addSpot">Add Spot</a>
+									<a id="deleteSpot1" class="button special" style='float:right;' value='1' function='deleteSpot'>Delete Spot</a>
 								</div>
 						</div>
 					</div>
@@ -104,23 +106,24 @@ test123
 			
 <script>
 var counter = 2;
+var t = $('#table_id1').DataTable();	
 			
 			$(document).ready( function () {
-				$('#table_id').DataTable({
-						"search":   false,
+				$('#table_id1').DataTable({
 						"lengthChange": false,
 						"ordering": false,
+						"destroy": true,
+						"select": true,
+						"bFilter":false,
+						"paging":false,
+						"sDom": '<"top">rt<"bottom"flp><"clear">'
 					});
-				$('#table_id2').DataTable({
-						"search":   false,
-						"lengthChange": false,
-						"ordering": false,
-				});
 				
-				var t = $('#table_id').DataTable();
-				
+						
  
-			$('#addSpot').on( 'click', function () {
+			$('body').on( 'click',"[function*='addSpot']", function () {
+				console.log('#table_id'+$(this).attr('value'))	
+				t = $('#table_id'+$(this).attr('value')).DataTable();						
 				t.row.add( [
 					'<input  name="name" id="name" value="" placeholder="Name" />',
 					'<input  name="email" id="email" value="" placeholder="Email" />',
@@ -130,40 +133,65 @@ var counter = 2;
 				
 			} );
 			
-			$('#table_id tbody').on( 'click', 'tr', function () {
+			$('body').on( 'click', 'tr', function () {
+			    console.log($(this).parent().parent().attr('id'))	
 				if ( $(this).hasClass('selected') ) {
 					$(this).removeClass('selected');
 				}
 				else {
-					t.$('tr.selected').removeClass('selected');
+					$(this).removeClass('selected');
 					$(this).addClass('selected');
 				}
 			} );
+			
+	
 		 
-			$('#deleteSpot').click( function () {
+			$('body').on('click',"[function*='deleteSpot']", function () {
+				console.log("123")
+				t = $('#table_id'+$(this).attr('value')).DataTable();	
 				t.row('.selected').remove().draw( false );
 			} );
  
 			$('#addDay').on('click', function(){
 
-				
-				var item = '<table id="table_id'+counter+'" class="display" style="width:100%"><thead><tr><th>Name</th><th>Description</th><th>Price</th></tr></thead><tfoot><tr><td colspan="2"></td><td>100.00</td></tr></tfoot></table>';
+				var date='<p><h3 id="dayTag'+counter+'">第'+counter+'天</h3><p>';
+				$('.table-wrapper').append(date);	
+				var item = '<table id="table_id'+counter+'"class="display" style="width:100%" function="table"><thead><tr value='+counter+'><th>Name</th><th>Description</th><th>Price</th></tr></thead><tfoot><tr><td colspan="2"></td><td>100.00</td></tr></tfoot></table>';
 				$('.table-wrapper').append(item);				
 				
-				item='<a id="addSpot" class="button special">Add Spot</a>'
-				$('.table-wrapper').append(item);	
+				item='<a id="addSpot'+counter+'" class="button special" value='+counter+' function="addSpot">Add Spot</a>';
+				$('.table-wrapper').append(item);
+					
 				
-				item='<a id="deleteSpot" class="button special">Delete Spot</a>'
+				item='<a id="deleteSpot'+counter+'" class="button special" style="float:right;" value='+counter+' function="deleteSpot">Delete Spot</a>';
 				$('.table-wrapper').append(item);	
 				
 				$('#table_id'+counter).DataTable({
-						"search":   false,
 						"lengthChange": false,
 						"ordering": false,
+						"destroy": true,
+						"bFilter":false,
+						"paging":false,
+						"select": true,
+						"sDom": '<"top">rt<"bottom"flp><"clear">'
+						
 				});
 				counter++;
 
 			});
+			
+			$('#deleteDay').click( function () {
+				if(counter==2)
+					return;
+				counter--;
+				$('#table_id'+counter).empty();
+				$('#table_id'+counter).removeClass('dataTable');
+				//$('#table_id'+counter).destroy;
+				$('#table_id'+counter).remove();	
+				$('#addSpot'+counter).remove();	
+				$('#deleteSpot'+counter).remove();			
+				$('#dayTag'+counter).remove();						
+			} );
 
 		
 			
