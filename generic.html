@@ -40,34 +40,49 @@
 					</header>
 				</div>
 			</section>
-
 		<!-- Two -->
-			<section id="two" class="wrapper style2" >
+		
+		
+			
+			
+			
+			
+			
+			
+
+		<!-- Three -->
+			<section id="three" class="wrapper style2" >
 				<div class="inner" >
 					<div class="box">
-						<div class="content">
-							<header class="align-center">
-								<p>交通旅費試算器</p>
-								<h2>行程排程</h2>
-							</header>
-						<h2 style="float:center;">行程排程</h2>
+						<div class="content" >
+						<!--<div id="map" style=" width: 100%; height: 400px; background-color: grey;"></div>-->
+						<h2 style="text-align:center;">行程排程</h2>
 								<a id="addDay" class="button special">Add Day</a>
 								<a id="deleteDay" class="button special"style="float:right;">Delete Day</a>
 								<p><h3 id="dayTag1">第1天</h3></p>								
-								<div class="table-wrapper">
+								<div class="table-wrapper"  id ="test">
 									<table id="table_id1" class="display" style="width:100%" function="table">
 										<thead>
 											<tr value='1'>
 												<th>Name</th>
 												<th>Description</th>
-												<th>Price</th>
+												<th>Place</th>
+												<th>Price</th>												
 											</tr>
 										</thead>
-										<tbody>											
+										<tbody >		
+												<th><input v-model="text" name="name" id="spot1" class="addSpot" value="text" placeholder="Name" />
+												<p>Message is: {{ text }}</p></th>
+												<th><input name="email"  class="addSpot" value="" placeholder="Email" /></th>	
+												<th><a id="detail" class="button special" function="placeDetail" @click='toggle = !toggle'>detail</a>												
+												<iframe width='100%' height='100%' frameborder='0' scrolling='no' marginheight='0' marginwidth='0' :src="mapAddress" v-show='toggle'></iframe></th>
+												<th>100</th>
+												<!--<th><iframe width='100%' height='200' frameborder='0' scrolling='no' marginheight='0' marginwidth='0' src='https://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=東京車站&z=16&output=embed&t='></iframe></th>-->		
+																					
 										</tbody>
 										<tfoot>
 											<tr>
-												<td colspan="2"></td>
+												<td colspan="3"></td>
 												<td>100.00</td>
 											</tr>
 										</tfoot>
@@ -100,15 +115,24 @@
 			<script src="assets/js/jquery.scrollex.min.js"></script>
 			<script src="assets/js/skel.min.js"></script>
 			<script src="assets/js/util.js"></script>
+			<script src="assets/js/jquery.geocomplete.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 			<script src="assets/js/main.js"></script>
 			<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
 			
 			
 <script>
+
+<!-- JQuery Scripts -->
 var counter = 2;
+var spotCounter = 2;
 var t = $('#table_id1').DataTable();	
+
 			
 			$(document).ready( function () {
+			
+				//initMap();
+			
 				$('#table_id1').DataTable({
 						"lengthChange": false,
 						"ordering": false,
@@ -116,24 +140,95 @@ var t = $('#table_id1').DataTable();
 						"select": true,
 						"bFilter":false,
 						"paging":false,
-						"sDom": '<"top">rt<"bottom"flp><"clear">'
-					});
+						"sDom": '<"top">rt<"bottom"flp><"clear">',
+						 drawCallback: function (row, data, start, end, display) {
+						 var api = this.api(), data;
+						 
+								var intVal = function ( i ) {
+									return typeof i === 'string' ?
+										i.replace(/[\$,]/g, '')*1 :
+									typeof i === 'number' ?
+										i : 0;
+									};
+								 total = api
+									.column( 3 )
+									.data()
+									.reduce( function (a, b) {
+									
+										return intVal(a) + intVal(b);
+									}, 0 );
+	 
+								// Total over this page
+								pageTotal = api
+									.column( 3, { page: 'current'} )
+									.data()
+									.reduce( function (a, b) {
+										return intVal(a) + intVal(b);
+									}, 0 );
+					 
+								// Update footer
+								$( api.column( 3 ).footer() ).html(
+									'$'+pageTotal +' ( $'+ total +' total)'
+								);
+							}
+						});
 				
-						
+		
  
 			$('body').on( 'click',"[function*='addSpot']", function () {
 				console.log('#table_id'+$(this).attr('value'))	
-				t = $('#table_id'+$(this).attr('value')).DataTable();						
+				t = $('#table_id'+$(this).attr('value')).DataTable({
+						"lengthChange": false,
+						"ordering": false,
+						"destroy": true,
+						"select": true,
+						"bFilter":false,
+						"paging":false,
+						"sDom": '<"top">rt<"bottom"flp><"clear">',
+						 drawCallback: function (row, data, start, end, display) {
+						 var api = this.api(), data;
+						 
+								var intVal = function ( i ) {
+									return typeof i === 'string' ?
+										i.replace(/[\$,]/g, '')*1 :
+									typeof i === 'number' ?
+										i : 0;
+									};
+								 total = api
+									.column( 3 )
+									.data()
+									.reduce( function (a, b) {
+									
+										return intVal(a) + intVal(b);
+									}, 0 );
+	 
+								// Total over this page
+								pageTotal = api
+									.column( 3, { page: 'current'} )
+									.data()
+									.reduce( function (a, b) {
+										return intVal(a) + intVal(b);
+									}, 0 );
+					 
+								// Update footer
+								$( api.column( 3 ).footer() ).html(
+									'$'+pageTotal +' ( $'+ total +' total)'
+								);
+							}
+						});						
 				t.row.add( [
-					'<input  name="name" id="name" value="" placeholder="Name" />',
-					'<input  name="email" id="email" value="" placeholder="Email" />',
-					'<input  name="email" id="email" value="" placeholder="Email" />'
+					'<input v-model="text" name="spot" id="spot'+spotCounter+'" class="addSpot" value="" placeholder="Name" /><p>Message is: {{ text }}</p>',
+					'<input name="spot" id="email" class="addSpot" value="" placeholder="Email" />',
+					'<a id="addSpot1" class="button special" value="1" function="placeDetail" @click="toggle = !toggle">detail</a><iframe width="100%" height="200" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" :src="mapAddress" v-show="toggle"></iframe>',
+					'100'
 				 ]).draw( false );
-		 
+				// autocomplete('spot'+spotCounter);
+				
+				//spotCounter++;
 				
 			} );
 			
-			$('body').on( 'click', 'tr', function () {
+			$('body').on( 'dblclick', 'tr', function () {
 			    console.log($(this).parent().parent().attr('id'))	
 				if ( $(this).hasClass('selected') ) {
 					$(this).removeClass('selected');
@@ -144,7 +239,7 @@ var t = $('#table_id1').DataTable();
 				}
 			} );
 			
-	
+			
 		 
 			$('body').on('click',"[function*='deleteSpot']", function () {
 				console.log("123")
@@ -173,7 +268,8 @@ var t = $('#table_id1').DataTable();
 						"bFilter":false,
 						"paging":false,
 						"select": true,
-						"sDom": '<"top">rt<"bottom"flp><"clear">'
+						"sDom": '<"top">rt<"bottom"flp><"clear">',
+						
 						
 				});
 				counter++;
@@ -193,11 +289,52 @@ var t = $('#table_id1').DataTable();
 				$('#dayTag'+counter).remove();						
 			} );
 
+			<!--Map-->
+			function initMap() {
+			  // The location of Uluru
+			
+			  var uluru = {lat: -25.344, lng: 131.036};
+			  // The map, centered at Uluru
+			  var map = new google.maps.Map( document.getElementById('map'), {zoom: 4, center: uluru});
+			  // The marker, positioned at Uluru
+			  var marker = new google.maps.Marker({position: uluru, map: map});
+			}
+			
+			
+			function autocomplete(id){
+			
+			var input = document.getElementById(id);
+			var autocomplete = new google.maps.places.Autocomplete(input);
+			
+			}
+			
+			
+			var name = new Vue({
+				el:'#table_id1',
+				data:{
+					text : '大阪',
+					toggle: true
+				
+				},
+				
+				computed:{
+				
+					mapAddress: function(){
+						return 'https://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q='+this.text+'&z=16&output=embed&t='
+					}
+				}			
+				
+				
+								
+			
+			})
+			
+			
+} );
+
+
+
 		
-			
-			
-			} );
-					
 </script>
 	</body>
 </html>
